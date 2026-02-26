@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
+import { SignJWT } from 'jose';
+import { JWT_SECRET, SESSION_COOKIE_NAME } from '@/lib/auth-constants';
 
 let prisma: PrismaClient;
 
@@ -55,11 +57,15 @@ export async function POST(request: Request) {
        );
     }
 
-    // In a real application, you would sign this JWT payload with jose/jsonwebtoken
-    // For demo purposes, we encode a payload
-    const sessionToken = Buffer.from(
-      JSON.stringify({ id: user.id, username: user.username })
-    ).toString('base64');
+    // Securely sign the JWT using jose
+    const token = await new SignJWT({ 
+      id: user.id, 
+      username: user.username
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('24h')
+      .sign(JWT_SECRET);
     
     const response = NextResponse.json(
       { success: true, user: { id: user.id, username: user.username } },
@@ -68,9 +74,11 @@ export async function POST(request: Request) {
     
     // Set HTTPOnly cookie with standard configuration
     response.cookies.set({
-      name: 'nexoro_session',
-      value: sessionToken,
+      name: SESSION_COOKIE_NAME,
+      value: token,
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 // 24 hours
     });
@@ -79,7 +87,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Login Error:", error);
     return NextResponse.json(
-      { message: "Interner Serverfehler", error: String(error) },
+      { message: "Interner Serverfehler" },
       { status: 500 }
     );
   }

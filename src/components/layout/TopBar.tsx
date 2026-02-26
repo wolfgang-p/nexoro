@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { 
   List,
@@ -53,9 +54,27 @@ export default function TopBar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<{ username: string; vname?: string; nname?: string } | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
+    // Fetch session data
+    async function fetchSession() {
+      try {
+        const response = await fetch('/api/auth/session');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.authenticated) {
+            setUser(data.user);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch session:", error);
+      }
+    }
+    fetchSession();
+
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setActiveDropdown(null);
@@ -65,6 +84,17 @@ export default function TopBar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/auth/logout', { method: 'POST' });
+      if (response.ok) {
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const toggleDropdown = (title: string) => {
     if (activeDropdown === title) {
@@ -284,17 +314,21 @@ export default function TopBar() {
              className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1.5 rounded-md transition-colors border ${activeDropdown === "UserMenu" ? "bg-gray-100 border-gray-200" : "bg-gray-50 border-gray-100 hover:bg-gray-100"}`}
            >
               <UserCircle className="w-5 h-5 text-gray-700" />
-              <span className="hidden xs:inline text-sm font-medium text-gray-700">nexoroadmin</span>
+              <span className="hidden xs:inline text-sm font-medium text-gray-700">{user?.username || 'nexoroadmin'}</span>
               <ChevronDown className="w-4 h-4 text-gray-500" />
            </button>
 
            {/* User Dropdown Menu */}
            {activeDropdown === "UserMenu" && (
              <div className="absolute top-10 right-0 w-56 bg-white border border-gray-100 rounded-md shadow-lg py-1 z-50 animate-in fade-in slide-in-from-top-2">
+                <div className="px-4 py-2 border-b border-gray-50 flex flex-col">
+                  <span className="text-sm font-semibold text-gray-800">{user?.vname ? `${user.vname} ${user.nname}` : user?.username || 'nexoroadmin'}</span>
+                  {/* <span className="text-xs text-gray-500 truncate">{user?.username ? `${user.username}@nexoro.de` : 'admin@nexoro.de'}</span> */}
+                </div>
                 
                 {/* Einloggen als with nested menu */}
                 <div 
-                  className="relative group"
+                  className="relative group pt-1"
                   onMouseEnter={() => setActiveSubMenu("LoginAs")}
                   onMouseLeave={() => setActiveSubMenu(null)}
                 >
@@ -309,15 +343,15 @@ export default function TopBar() {
                   {/* Nested submenu for Login As */}
                   {activeSubMenu === "LoginAs" && (
                     <div className="absolute top-0 right-full w-48 mr-1 bg-white border border-gray-100 rounded-md shadow-lg py-1 z-50">
-                       <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 border-b border-gray-50">
+                       <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 border-b border-gray-50">
                          nexoroadmin
-                       </Link>
-                       <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 border-b border-gray-50">
+                       </button>
+                       <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 border-b border-gray-50">
                          Hauptnummernrouting
-                       </Link>
-                       <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700">
+                       </button>
+                       <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700">
                          demo
-                       </Link>
+                       </button>
                     </div>
                   )}
                 </div>
@@ -337,10 +371,13 @@ export default function TopBar() {
                   <Settings className="w-4 h-4 mr-2 text-gray-500" />
                   Usereinstellungen
                 </Link>
-                <Link href="/login" className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors mt-1">
+                <button 
+                  onClick={handleLogout}
+                  className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors mt-1"
+                >
                   <LogOut className="w-4 h-4 mr-2" />
                   Abmelden
-                </Link>
+                </button>
              </div>
            )}
          </div>
@@ -406,18 +443,17 @@ export default function TopBar() {
                <div className="flex items-center space-x-3 px-2">
                  <UserCircle className="w-6 h-6 text-gray-400" />
                  <div className="flex flex-col">
-                   <span className="text-sm font-semibold text-gray-800">nexoroadmin</span>
-                   <span className="text-xs text-gray-500">Administrator</span>
+                   <span className="text-sm font-semibold text-gray-800">{user?.vname ? `${user.vname} ${user.nname}` : user?.username || 'nexoroadmin'}</span>
+                   {/* <span className="text-xs text-gray-500">{user?.username ? `${user.username}@nexoro.de` : 'Administrator'}</span> */}
                  </div>
                </div>
-               <Link 
-                href="/login" 
-                className="flex items-center space-x-3 p-2 text-red-600 hover:bg-red-50 rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
+               <button 
+                onClick={handleLogout}
+                className="flex items-center space-x-3 p-2 text-red-600 hover:bg-red-50 rounded-md w-full text-left"
                >
                  <LogOut className="w-5 h-5 ml-1.5" />
                  <span className="text-sm font-semibold">Abmelden</span>
-               </Link>
+               </button>
             </div>
           </div>
         </div>
