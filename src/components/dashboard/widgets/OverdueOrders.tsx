@@ -14,20 +14,33 @@ interface OverdueOrder {
 export const OverdueOrders: React.FC = () => {
   const [orders, setOrders] = useState<OverdueOrder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/dashboard/orders-attention')
       .then(res => res.json())
       .then(d => {
-        setOrders(Array.isArray(d) ? d : []);
+        if (d.error) {
+          setError(d.message || d.error);
+        } else {
+          setOrders(Array.isArray(d) ? d : []);
+        }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) return <div className="space-y-4">{[1,2].map(i => <div key={i} className="h-16 bg-slate-50 animate-pulse rounded-lg" />)}</div>;
 
-  if (orders.length === 0) return <div className="text-center py-8 text-slate-400 text-sm">Alles im Plan</div>;
+  if (error) return (
+    <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-xl text-xs flex gap-2 items-center">
+      <AlertTriangle size={14} className="shrink-0" />
+      <p className="font-medium">Fehler: {error}</p>
+    </div>
+  );
 
   const levelColors = {
     hoch: 'bg-red-50 text-red-700 border-red-100',
@@ -37,6 +50,7 @@ export const OverdueOrders: React.FC = () => {
 
   return (
     <div className="space-y-3">
+      {orders.length === 0 && <div className="text-center py-8 text-slate-400 text-sm">Alles im Plan</div>}
       {orders.map((order) => (
         <div 
           key={order.id} 
