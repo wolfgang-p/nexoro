@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
 import { 
-  FileText, 
+  List,
   CheckSquare, 
   Mail, 
   MessageSquare, 
@@ -21,7 +21,24 @@ import {
   LogOut,
   ChevronRight,
   Menu,
-  X
+  X,
+  Package,
+  BarChart3,
+  FlaskConical,
+  FileText,
+  File,
+  LayoutDashboard,
+  Filter,
+  TrendingUp,
+  Target,
+  Clock,
+  Briefcase,
+  Map,
+  BookOpen,
+  Key,
+  Archive,
+  Inbox,
+  Layout
 } from "lucide-react";
 
 interface MenuItem {
@@ -29,7 +46,7 @@ interface MenuItem {
   icon: React.ReactNode;
   href?: string;
   count?: number;
-  subItems?: { title: string; href: string; divider?: boolean }[];
+  subItems?: { title: string; href: string; divider?: boolean; icon?: React.ReactNode }[];
 }
 
 export default function TopBar() {
@@ -60,69 +77,89 @@ export default function TopBar() {
   };
 
   const menuItems: MenuItem[] = [
-    { title: "Aufträge", icon: <FileText className="w-5 h-5 mb-0.5" />, href: "/auftraege" },
+    { title: "Aufträge", icon: <List className="w-5 h-5 mb-0.5" />, href: "/auftraege" },
     { title: "Aufgaben", icon: <CheckSquare className="w-5 h-5 mb-0.5" />, href: "/aufgaben" },
+    {
+      title: "Warenwirtschaft",
+      icon: <Package className="w-5 h-5 mb-0.5" />,
+      subItems: [
+        { title: "Dokumentenverwaltung", href: "/warenwirtschaft/dokumente", icon: <File className="w-4 h-4 mr-2" /> },
+        { title: "Produktkatalog", href: "/warenwirtschaft/produkte", icon: <List className="w-4 h-4 mr-2" /> },
+      ]
+    },
     { 
       title: "Kommunikation", 
       icon: <Mail className="w-5 h-5 mb-0.5" />, 
       count: 0,
       subItems: [
-        { title: "E-Mails", href: "/emails" },
-        { title: "SMS", href: "/sms" },
+        { title: "E-Mails", href: "/emails", icon: <Mail className="w-4 h-4 mr-2" /> },
+        { title: "SMS", href: "/sms", icon: <MessageSquare className="w-4 h-4 mr-2" /> },
         { title: "-", href: "#", divider: true },
-        { title: "Eingehende Anrufe", href: "/anrufe/eingehend" },
-        { title: "Ausgehende Anrufe", href: "/anrufe/ausgehend" },
-        { title: "Meine eingehenden Anrufe", href: "/anrufe/meine-eingehend" },
-        { title: "Meine ausgehenden Anrufe", href: "/anrufe/meine-ausgehend" },
+        { title: "Eingehende Anrufe", href: "/anrufe/eingehend", icon: <PhoneCall className="w-4 h-4 mr-2" /> },
+        { title: "Ausgehende Anrufe", href: "/anrufe/ausgehend", icon: <PhoneCall className="w-4 h-4 mr-2" /> },
         { title: "-", href: "#", divider: true },
-        { title: "Aktive Rückrufe", href: "/rueckrufe/aktiv" },
-        { title: "Archivierte Rückrufe", href: "/rueckrufe/archiv" },
-      ]
-    },
-    { 
-      title: "Anfragen", 
-      icon: <HelpCircle className="w-5 h-5 mb-0.5" />, 
-      count: 0,
-      subItems: [
-        { title: "Aktive Anfragen", href: "/anfragen/aktiv" },
-        { title: "Archivierte Anfragen", href: "/anfragen/archiv" },
-        { title: "Anfrage manuell erstellen", href: "/anfragen/erstellen" },
-      ]
-    },
-    { 
-      title: "Kunden", 
-      icon: <Users className="w-5 h-5 mb-0.5" />, 
-      subItems: [
-        { title: "Kunden", href: "/kunden" },
-        { title: "Kunden Archiv", href: "/kunden/archiv" },
-        { title: "Kunden erstellen", href: "/kunden/erstellen" },
+        { title: "Meine eingehenden Anrufe", href: "/anrufe/meine-eingehend", icon: <PhoneCall className="w-4 h-4 mr-2" /> },
+        { title: "Meine ausgehenden Anrufe", href: "/anrufe/meine-ausgehend", icon: <PhoneCall className="w-4 h-4 mr-2" /> },
+        { title: "-", href: "#", divider: true },
+        { title: "Aktive Rückrufe", href: "/rueckrufe/aktiv", icon: <PhoneForwarded className="w-4 h-4 mr-2" /> },
+        { title: "Archivierte Rückrufe", href: "/rueckrufe/archiv", icon: <Archive className="w-4 h-4 mr-2" /> },
+        { title: "-", href: "#", divider: true },
+        { title: "Aktive Anfragen", href: "/anfragen/aktiv", icon: <HelpCircle className="w-4 h-4 mr-2" /> },
+        { title: "Archivierte Anfragen", href: "/anfragen/archiv", icon: <Archive className="w-4 h-4 mr-2" /> },
       ]
     },
     { 
       title: "Kontakte", 
       icon: <User className="w-5 h-5 mb-0.5" />, 
       subItems: [
-        { title: "Kontakte", href: "/kontakte" },
-        { title: "Kontakt hinzufügen", href: "/kontakte/hinzufuegen" },
+        { title: "Kontakte", href: "/kontakte", icon: <User className="w-4 h-4 mr-2" /> },
+        { title: "Kontakt hinzufügen", href: "/kontakte/hinzufuegen", icon: <UserCircle className="w-4 h-4 mr-2" /> },
+        { title: "-", href: "#", divider: true },
+        { title: "Kunden", href: "/kunden", icon: <Users className="w-4 h-4 mr-2" /> },
+        { title: "Kunden Archiv", href: "/kunden/archiv", icon: <Archive className="w-4 h-4 mr-2" /> },
+        { title: "-", href: "#", divider: true },
+        { title: "Partner", href: "/partner", icon: <Users className="w-4 h-4 mr-2" /> },
+        { title: "Partnerarchiv", href: "/partner/archiv", icon: <Archive className="w-4 h-4 mr-2" /> },
       ]
     },
-    { 
-      title: "Partner", 
-      icon: <Users className="w-5 h-5 mb-0.5" />, 
+    {
+      title: "Statistik",
+      icon: <BarChart3 className="w-5 h-5 mb-0.5" />,
       subItems: [
-        { title: "Partner", href: "/partner" },
-        { title: "Partnerarchiv", href: "/partner/archiv" },
-        { title: "Partner hinzufügen", href: "/partner/hinzufuegen" },
+        { title: "Dashboard", href: "/statistik/dashboard", icon: <LayoutDashboard className="w-4 h-4 mr-2" /> },
+        { title: "Funnel Dashboard", href: "/statistik/funnel", icon: <Filter className="w-4 h-4 mr-2" /> },
+        { title: "Order Funnel Statistik", href: "/statistik/order", icon: <TrendingUp className="w-4 h-4 mr-2" /> },
+        { title: "User Statistik", href: "/statistik/user", icon: <User className="w-4 h-4 mr-2" /> },
+        { title: "Leads", href: "/statistik/leads", icon: <Target className="w-4 h-4 mr-2" /> },
+      ]
+    },
+    {
+      title: "Beta",
+      icon: <FlaskConical className="w-5 h-5 mb-0.5" />,
+      subItems: [
+        { title: "Projektboard", href: "/beta/projektboard", icon: <Layout className="w-4 h-4 mr-2" /> },
+        { title: "Admin Center", href: "/beta/admin-center", icon: <Settings className="w-4 h-4 mr-2" /> },
+        { title: "Zeiterfassung", href: "/beta/zeiterfassung", icon: <Clock className="w-4 h-4 mr-2" /> },
+        { title: "Buchhaltung", href: "/beta/buchhaltung", icon: <Briefcase className="w-4 h-4 mr-2" /> },
       ]
     },
     {
        title: "Admin",
        icon: <Settings className="w-5 h-5 mb-0.5" />,
        subItems: [
-         { title: "Tools", href: "/admin/tools" },
-         { title: "Edit", href: "/admin/edit" },
-         { title: "Interna", href: "/admin/interna" },
-         { title: "Statistiken", href: "/admin/statistiken" }
+         { title: "User verwalten", href: "/admin/users", icon: <Users className="w-4 h-4 mr-2" /> },
+         { title: "Gruppenrechte", href: "/admin/rights", icon: <Key className="w-4 h-4 mr-2" /> },
+         { title: "-", href: "#", divider: true },
+         { title: "Telefon Routing", href: "/admin/routing", icon: <PhoneCall className="w-4 h-4 mr-2" /> },
+         { title: "Bereitschaftsnummern", href: "/admin/bereitschaft", icon: <PhoneCall className="w-4 h-4 mr-2" /> },
+         { title: "-", href: "#", divider: true },
+         { title: "Email-Vorlagen", href: "/admin/templates/email", icon: <Mail className="w-4 h-4 mr-2" /> },
+         { title: "SMS-Vorlagen", href: "/admin/templates/sms", icon: <MessageSquare className="w-4 h-4 mr-2" /> },
+         { title: "Email-Postfächer-Übersicht", href: "/admin/mailboxes", icon: <Inbox className="w-4 h-4 mr-2" /> },
+         { title: "-", href: "#", divider: true },
+         { title: "Archiv", href: "/admin/archiv", icon: <Archive className="w-4 h-4 mr-2" /> },
+         { title: "Produkte verwalten", href: "/admin/produkte", icon: <Package className="w-4 h-4 mr-2" /> },
+         { title: "Dispo", href: "/admin/dispo", icon: <Map className="w-4 h-4 mr-2" /> },
        ]
     }
   ];
@@ -135,6 +172,7 @@ export default function TopBar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50 shadow-sm flex items-center justify-between px-4" ref={dropdownRef}>
+
       
       {/* Mobile Hamburger Menu Toggle */}
       <div className="md:hidden flex items-center">
@@ -188,7 +226,7 @@ export default function TopBar() {
 
             {/* Dropdown Menu */}
             {item.subItems && activeDropdown === item.title && (
-              <div className="absolute top-[4.1rem] left-0 w-48 bg-white border border-gray-100 rounded-b-md shadow-lg py-1 z-50 animate-in fade-in slide-in-from-top-1">
+              <div className="absolute top-[4.1rem] left-0 w-64 bg-white border border-gray-100 rounded-b-md shadow-lg py-1 z-50 animate-in fade-in slide-in-from-top-1">
                 {item.subItems.map((sub, idx) => (
                   sub.divider ? (
                     <div key={idx} className="h-px bg-gray-100 my-1 mx-2"></div>
@@ -196,9 +234,10 @@ export default function TopBar() {
                     <Link 
                       key={idx} 
                       href={sub.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-50 hover:text-blue-700 transition-colors"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-slate-50 hover:text-blue-700 transition-colors"
                       onClick={() => setActiveDropdown(null)}
                     >
+                      {sub.icon && <span className="text-gray-400 group-hover:text-blue-700">{sub.icon}</span>}
                       {sub.title}
                     </Link>
                   )
@@ -211,6 +250,7 @@ export default function TopBar() {
 
       {/* Right Side: Notifications & User Menu */}
       <div className="flex items-center h-full pl-2 sm:pl-4 space-x-2 sm:space-x-3 border-l border-gray-100 w-auto justify-end relative">
+
          
          {/* Notification Bell */}
          <div className="relative">
@@ -346,9 +386,10 @@ export default function TopBar() {
                             <Link 
                               key={idx} 
                               href={sub.href}
-                              className="text-sm text-gray-600 hover:text-blue-700"
+                              className="flex items-center text-sm text-gray-600 hover:text-blue-700 py-1"
                               onClick={() => setIsMobileMenuOpen(false)}
                             >
+                              {sub.icon && <span className="mr-2 text-gray-400">{sub.icon}</span>}
                               {sub.title}
                             </Link>
                           )
