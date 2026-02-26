@@ -1,0 +1,7 @@
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root@127.0.0.1:3306/oms_legacy"
+}
+generator client {
+  provider = "prisma-client-js"
+}
