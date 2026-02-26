@@ -11,8 +11,6 @@ export default function DashboardLayout({
       <TopBar />
       
       <div className="flex flex-1 pt-20">
-        <Sidebar />
-        
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6 custom-scrollbar">
           <div className="max-w-7xl mx-auto">
              {children}

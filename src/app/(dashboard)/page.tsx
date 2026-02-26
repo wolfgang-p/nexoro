@@ -1,32 +1,74 @@
-import { redirect } from 'next/navigation';
+import { DashboardGrid } from '@/components/dashboard/DashboardGrid';
+import { DashboardCard } from '@/components/dashboard/DashboardCard';
+import { NewCustomersChart } from '@/components/dashboard/widgets/NewCustomersChart';
+import { EmailList } from '@/components/dashboard/widgets/EmailList';
+import { OverdueOrders } from '@/components/dashboard/widgets/OverdueOrders';
+import { TaskList } from '@/components/dashboard/widgets/TaskList';
+import { LeadsList } from '@/components/dashboard/widgets/LeadsList';
+import { CalendarWidget } from '@/components/dashboard/widgets/CalendarWidget';
+import { NotesWidget } from '@/components/dashboard/widgets/NotesWidget';
 
-export default function DashboardIndex() {
-  // Normally we would check for a session via cookies() here
-  // and redirect to /login if there isn't one.
-  // For the demo purpose, we assume the user is "logged in" when they see this layout
-  
+export default function DashboardPage() {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Willkommen im neuen Nexoro Dashboard</h1>
-      <p className="text-gray-600 mb-6">
-        Das Dashboard wurde erfolgreich mit Next.js und Tailwind CSS neu aufgebaut. 
-        Nutze die Navigation oben oder die Filter links, um Aufträge, Kunden und Aufgaben zu verwalten.
-      </p>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-         <div className="p-6 bg-blue-50 bg-opacity-50 rounded-lg border border-blue-100">
-           <h3 className="font-semibold text-blue-800 mb-2">Offene Aufträge</h3>
-           <p className="text-3xl font-bold text-blue-600">12</p>
-         </div>
-         <div className="p-6 bg-green-50 bg-opacity-50 rounded-lg border border-green-100">
-           <h3 className="font-semibold text-green-800 mb-2">Neukunden (Heute)</h3>
-           <p className="text-3xl font-bold text-green-600">3</p>
-         </div>
-         <div className="p-6 bg-purple-50 bg-opacity-50 rounded-lg border border-purple-100">
-           <h3 className="font-semibold text-purple-800 mb-2">Anrufe in Warteschlange</h3>
-           <p className="text-3xl font-bold text-purple-600">0</p>
-         </div>
-      </div>
+    <div className="min-h-screen bg-slate-50/30 pb-12">
+      <DashboardGrid>
+        {/* Index 0: Chart (Left) */}
+        <DashboardCard 
+          title="Neukunden (letzte 30 Tage)" 
+          subtitle="Trendentwicklung der Auftragseingänge"
+        >
+          <NewCustomersChart />
+        </DashboardCard>
+
+        {/* Index 1: Calendar (Left) */}
+        <DashboardCard 
+          title="Kalender (Tag)" 
+          subtitle="Ihre anstehenden Termine"
+        >
+          <CalendarWidget />
+        </DashboardCard>
+
+        {/* Index 2: Emails (Right) */}
+        <DashboardCard 
+          title="Eingehende E-Mails" 
+          subtitle="Posteingang (INBOX)"
+          meta={<span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">Live</span>}
+        >
+          <EmailList />
+        </DashboardCard>
+
+        {/* Index 3: Attention (Right) */}
+        <DashboardCard 
+          title="Aufträge mit Handlungsbedarf" 
+          subtitle="Status-Überfälligkeiten"
+        >
+          <OverdueOrders />
+        </DashboardCard>
+
+        {/* Index 4: Tasks (Right) */}
+        <DashboardCard 
+          title="Aufgaben" 
+          subtitle="Persönlich & Gruppe"
+        >
+          <TaskList />
+        </DashboardCard>
+
+        {/* Index 5: Leads (Right) */}
+        <DashboardCard 
+          title="Neue Leads" 
+          subtitle="Chronologisch neueste Aufträge"
+        >
+          <LeadsList />
+        </DashboardCard>
+
+        {/* Index 6: Notes (Left) */}
+        <DashboardCard 
+          title="Persönliche Notizen" 
+          subtitle="Nur für Sie sichtbar (Lokal)"
+        >
+          <NotesWidget />
+        </DashboardCard>
+      </DashboardGrid>
     </div>
   );
 }
