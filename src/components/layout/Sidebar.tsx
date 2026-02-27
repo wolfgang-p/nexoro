@@ -12,12 +12,20 @@ import {
 
 interface SidebarSection {
   title: string;
-  items: { label: string; count: number; active?: boolean }[];
+  items: { label: string; count: number; active?: boolean; href?: string }[];
   isOpen?: boolean;
 }
 
 export default function Sidebar() {
   const [sections, setSections] = useState<SidebarSection[]>([
+    {
+      title: "Verwaltung",
+      isOpen: true,
+      items: [
+        { label: "Kunden", count: 0, href: "/customers" },
+        { label: "Partner", count: 0, href: "/partners" }
+      ]
+    },
     {
       title: "Diverses",
       isOpen: true,
@@ -114,7 +122,7 @@ export default function Sidebar() {
                 {section.items.map((item, itemIdx) => (
                   <Link 
                     key={itemIdx} 
-                    href="#"
+                    href={item.href || "#"}
                     className={`flex items-center justify-between p-1.5 rounded-md text-sm transition-colors ${
                       item.active 
                         ? "bg-blue-50 text-blue-700 font-medium" 

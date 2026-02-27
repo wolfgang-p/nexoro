@@ -33,6 +33,8 @@ model Abgabestellen {
   updatedAt       DateTime? @map("updated_at")
   userLastSave    String?   @map("user_last_save")
   aktiv           Int?      @default(1)
+  
+  partners PartnersAbgabestellen[]
   lat             String?
   lng             String?
   footerTextIndiv String?   @map("footer_text_indiv")
@@ -1348,6 +1350,10 @@ model Contacts {
   adwordsRegion          String?  @map("adwords_region")
   birthday               String?
 
+  endpoints         Endpoints[]
+  customers         ContactsCustomers[]
+  partners          ContactsPartners[]
+
   @@map("contacts")
 }
 
@@ -1356,6 +1362,9 @@ model ContactsCustomers {
   coid Int?
   cuid Int?
   type String?
+
+  contact  Contacts? @relation(fields: [coid], references: [id])
+  customer Customers? @relation(fields: [cuid], references: [id])
 
   @@map("contacts_customers")
 }
@@ -1367,6 +1376,9 @@ model ContactsPartners {
   betid                    Int?
   type                     String?
   hauptkontaktAbgabestelle Int?    @default(0) @map("hauptkontakt_abgabestelle")
+
+  contact Contacts? @relation(fields: [coid], references: [id])
+  partner Partners? @relation(fields: [cuid], references: [id])
 
   @@map("contacts_partners")
 }
@@ -1484,6 +1496,9 @@ model Customers {
   ohneMwst                 Int?     @default(0) @map("ohne_mwst")
   partnerAbholEmail        String?  @map("partner_abhol_email")
   sprache                  String?
+
+  contacts ContactsCustomers[]
+  orders   Orders[]
 
   @@map("customers")
 }
@@ -2131,6 +2146,8 @@ model Endpoints {
   endpointSubtype String? @map("endpoint_subtype")
   endpointValue   String? @map("endpoint_value")
   user            String?
+
+  contact Contacts? @relation(fields: [contactId], references: [id])
 
   @@map("endpoints")
 }
@@ -2959,6 +2976,8 @@ model Orders {
   anfrageWann                         String?   @map("anfrage_wann")
   inquiryAssignedTo                   String?   @map("inquiry_assigned_to")
 
+  customer Customers? @relation(fields: [customerId], references: [id])
+
   @@map("orders")
 }
 
@@ -3256,6 +3275,9 @@ model Partners {
   webinarDatum                       DateTime? @map("webinar_datum")
   webinarTyp                         String?   @map("webinar_typ")
 
+  contacts ContactsPartners[]
+  abgabestellen PartnersAbgabestellen[]
+
   @@map("partners")
 }
 
@@ -3306,6 +3328,9 @@ model PartnersAbgabestellen {
   id             Int @id @default(autoincrement())
   partnerId      Int @map("partner_id")
   abgabestelleId Int @map("abgabestelle_id")
+
+  partner      Partners       @relation(fields: [partnerId], references: [id])
+  abgabestelle Abgabestellen @relation(fields: [abgabestelleId], references: [id])
 
   @@map("partners_abgabestellen")
 }
