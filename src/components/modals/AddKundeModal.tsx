@@ -143,7 +143,7 @@ export function AddKundeModal({ isOpen, onClose, onSuccess }: AddKundeModalProps
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Anrede</Label>
-                  <Select onValueChange={v => updateField('anrede', v)}>
+                  <Select onValueChange={(v: string) => updateField('anrede', v)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Wählen..." />
                     </SelectTrigger>
@@ -178,7 +178,7 @@ export function AddKundeModal({ isOpen, onClose, onSuccess }: AddKundeModalProps
                   </div>
                   <div className="space-y-2">
                     <Label>UID-Status</Label>
-                    <Select onValueChange={v => updateField('uidInfo', v)}>
+                    <Select onValueChange={(v: string) => updateField('uidInfo', v)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Wählen..." />
                       </SelectTrigger>
@@ -212,7 +212,7 @@ export function AddKundeModal({ isOpen, onClose, onSuccess }: AddKundeModalProps
               </div>
               <div className="space-y-2">
                 <Label>Land</Label>
-                <Select defaultValue="Österreich" onValueChange={v => updateField('land', v)}>
+                <Select defaultValue="Österreich" onValueChange={(v: string) => updateField('land', v)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -258,7 +258,7 @@ export function AddKundeModal({ isOpen, onClose, onSuccess }: AddKundeModalProps
                   <Checkbox 
                     id="sendMail" 
                     checked={formData.sendMail} 
-                    onCheckedChange={v => updateField('sendMail', !!v)} 
+                    onCheckedChange={(v: boolean | "indeterminate") => updateField('sendMail', !!v)} 
                   />
                   <Label htmlFor="sendMail" className="text-sm">Statusmeldungen per E-Mail erhalten</Label>
                 </div>
@@ -266,7 +266,7 @@ export function AddKundeModal({ isOpen, onClose, onSuccess }: AddKundeModalProps
                   <Checkbox 
                     id="sendSms" 
                     checked={formData.sendSms} 
-                    onCheckedChange={v => updateField('sendSms', !!v)} 
+                    onCheckedChange={(v: boolean | "indeterminate") => updateField('sendSms', !!v)} 
                   />
                   <Label htmlFor="sendSms" className="text-sm">Statusmeldungen per SMS erhalten</Label>
                 </div>
